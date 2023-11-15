@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
   console.log(`GET ${req.originalUrl}`);
 
   try {
-    const personnel = await Personnel.find();
+    const personnel = await Personnel.find().populate("detections");
     return res.status(200).send(personnel);
   } catch (err) {
     console.error("error fetching asset", err);

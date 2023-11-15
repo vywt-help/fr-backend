@@ -5,8 +5,8 @@ const moment = require("moment");
 
 const detectionSchema = new Schema({
     personnel: {
-        type: ObjectId,
-        ref: 'personnel'
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Personnel'
     },
     location: String,
     timeReported: {type: Date, default: moment().unix()},

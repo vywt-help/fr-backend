@@ -9,8 +9,8 @@ const personnelSchema = new Schema({
     appointment: String,
     attendance: Boolean,
     detections: [{
-        type: ObjectId,
-        ref: "detection"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Detection"
     }]
 })
 

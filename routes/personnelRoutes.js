@@ -2,7 +2,6 @@ const Personnel = require("../models/Personnel");
 
 const express = require('express');
 const router = express.Router();
-const { forEach, filter } = require('lodash');
 
 // GET Call
 router.get('/', async (req, res) => {
@@ -10,26 +9,6 @@ router.get('/', async (req, res) => {
 
   try {
     const personnel = await Personnel.find();
-    return res.status(200).send(personnel);
-  } catch (err) {
-    console.error("error fetching asset", err);
-    return res.status(500).send({
-      message: err.message,
-    });
-  }
-})
-
-// Update Attendance Call
-router.patch('/:id/attendance', async (req, res) => {
-  console.log(`PUT ${req.originalUrl}`);
-  const id = req.params.id;
-  try {
-    const personnel = await Personnel.findById(id, (err, personnel) => {
-      personnel.attendance = true;
-    });
-    personnel.attendance = true;
-    personnel.save();
-    
     return res.status(200).send(personnel);
   } catch (err) {
     console.error("error fetching asset", err);

@@ -2,10 +2,10 @@ const Detection = require("../models/Detection");
 const Personnel = require("../models/Personnel");
 
 const express = require('express');
-const moment = require('moment')
+const moment = require('moment');
 const router = express.Router();
 
-const { forEach, filter } = require('lodash');
+const { forEach, filter, constant } = require('lodash');
 
 // Get all detections
 // GET /detection
@@ -15,21 +15,21 @@ router.get('/', async (req, res) => {
   try {
     const detection = await Detection.find().populate("personnel");
 
-    // Sort by reverse order of time: sort by moment object -> reverse
+    // Sort by ascending time
     const sortedArray = detection.sort(function(a,b) {
-      return moment.utc(a.timeReported).diff(moment.utc(b.timeReported))
-    }).reverse();
-
-    // Filter out by personnel ID
-    const unique = sortedArray.filter((obj, index) => {
-      return index === sortedArray.findIndex(o => obj.personnel._id == o.personnel._id)
+      return moment(a.timeReported).diff(moment(b.timeReported))
     });
 
-    // Extract latest x entries
-    let x = 11;
-    const extract = unique.slice(0, x);
+    // // Filter out by personnel ID -> reverse (keeps earliest detection)
+    // const unique = sortedArray.filter((obj, index) => {
+    //   return index === sortedArray.findIndex(o => obj.personnel._id == o.personnel._id)
+    // }).reverse();
 
-    return res.status(200).send(extract);
+    // // Extract latest x entries
+    // let x = 11;
+    // const extract = unique.slice(0, x);
+
+    return res.status(200).send(sortedArray);
   } catch (err) {
     console.error("error fetching asset", err);
     return res.status(500).send({
@@ -37,6 +37,8 @@ router.get('/', async (req, res) => {
     });
   }
 })
+
+const fs = require('fs');
 
 // Update Detection
 // POST /detection/personnelId
@@ -50,9 +52,36 @@ router.post('/:id', async (req, res) => {
       
       console.log(`DETECTION ${personnel}`);
 
+      const location = req.query.location;
+
+      const imagePy64 = req.query.image;
+      var imageData, bufferData;
+
+      if (imagePy64) {
+        imageData = imagePy64.replace("%2B", "+");
+        //console.log(`IMAGE DATA: ${imageData}`);
+        bufferData = Buffer.from(imageData, "base64");
+        //console.log(`BUFFER DATA:`);
+        //console.log(bufferData);
+        //console.log(`CONVERTED BASE 64: ${bufferData.toString('base64')}`)
+        //fs.writeFileSync("output.png", bufferData);
+
+        /* STEPS TO SHOW IMAGE IN REACT
+        1. Get variable
+        > var buffer;
+        2. Convert to base64 string from buffer
+        > const base64String = buffer.toString('base64');
+        3. Append prefix
+        > const withPrefix = 'data:image/png;base64,' + base64String;
+        4. Use img tag, set src to image
+        > <img src = {base64String} alt = "Detected Face" />
+        */
+      }
+
       const newDetection = new Detection({
         personnel: personnel,
-        location:req.query.location,
+        location: location,
+        image: bufferData,
         timeReported: moment.utc().toDate()
       });
 

@@ -9,6 +9,7 @@ const detectionSchema = new Schema({
         ref: 'Personnel'
     },
     location: String,
+    image: Buffer,
     timeReported: {type: Date, default: moment().unix()},
 })
 

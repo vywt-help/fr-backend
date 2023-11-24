@@ -58,7 +58,8 @@ router.post('/:id', async (req, res) => {
       var imageData, bufferData;
 
       if (imagePy64) {
-        imageData = imagePy64.replace("%2B", "+");
+        //imageData = imagePy64.replace("%2B", "+");
+        imageData = imagePy64;
         //console.log(`IMAGE DATA: ${imageData}`);
         bufferData = Buffer.from(imageData, "base64");
         //console.log(`BUFFER DATA:`);
@@ -98,6 +99,6 @@ router.post('/:id', async (req, res) => {
       message: err.message,
     });
   }
-})
+});
 
 module.exports = router;

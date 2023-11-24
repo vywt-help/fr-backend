@@ -7,6 +7,7 @@ const personnelSchema = new Schema({
     name: String,
     phoneNumber: Number,
     appointment: String,
+    group: String,
     attendance: Boolean,
     detections: [{
         type: mongoose.Schema.Types.ObjectId,
